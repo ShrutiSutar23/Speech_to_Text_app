@@ -5,6 +5,7 @@ export default function RecorderPanel() {
   const [isRecording, setIsRecording] = useState(false)
   const [timer, setTimer] = useState(0)
   const [audioURL, setAudioURL] = useState(null)
+  const [transcript, setTranscript] = useState("")
   const mediaRecorderRef = useRef(null)
   const chunksRef = useRef([])
   const timerRef = useRef(null)
@@ -17,10 +18,18 @@ export default function RecorderPanel() {
     mediaRecorder.ondataavailable = (e) => {
       chunksRef.current.push(e.data)
     }
-    mediaRecorder.onstop = () => {
+    mediaRecorder.onstop = async () => {
       const blob = new Blob(chunksRef.current, { type: "audio/webm" })
       const url = URL.createObjectURL(blob)
       setAudioURL(url)
+      const formData = new FormData()
+      formData.append("file", blob, "recording.webm")
+      const response = await fetch("http://127.0.0.1:5000/transcribe", {
+        method: "POST",
+        body: formData
+      })
+      const data = await response.json()
+      setTranscript(data.transcript)
     }
     mediaRecorder.start()
     setIsRecording(true)
@@ -58,6 +67,13 @@ export default function RecorderPanel() {
       <p className="text-gray-400 text-sm">
         Press the button and start speaking...
       </p>
+
+      {transcript && (
+        <div className="max-w-xl w-full bg-white rounded-2xl shadow-md p-6 mt-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-2">Transcript</h2>
+          <p className="text-gray-600">{transcript}</p>
+        </div>
+      )}
 
       {audioURL && (
         <div className="flex flex-col items-center gap-3">
