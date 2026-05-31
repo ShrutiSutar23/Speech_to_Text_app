@@ -19,12 +19,23 @@ export default function TranscriptPanel({ transcript }) {
     a.click()
   }
 
+  const wordCount = transcript ? transcript.trim().split(/\s+/).length : 0
+  const charCount = transcript ? transcript.length : 0
+
   return (
     <div className="max-w-3xl mx-auto w-full px-6 pb-12">
       <div className="bg-white rounded-2xl shadow-md p-6 min-h-48">
-        <h2 className="text-lg font-semibold text-gray-700 mb-3">
-          Transcript
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold text-gray-700">
+            📝 Transcript
+          </h2>
+          {transcript && (
+            <div className="flex gap-3 text-xs text-gray-400">
+              <span>{wordCount} words</span>
+              <span>{charCount} characters</span>
+            </div>
+          )}
+        </div>
         {transcript ? (
           <p className="text-gray-700 leading-relaxed">{transcript}</p>
         ) : (
@@ -40,13 +51,13 @@ export default function TranscriptPanel({ transcript }) {
             onClick={handleCopy}
             className="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition duration-200"
           >
-            {copied ? "Copied!" : "Copy"}
+            {copied ? "✅ Copied!" : "📋 Copy"}
           </button>
           <button
             onClick={handleDownload}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition duration-200"
+            className="bg-green-50 hover:bg-green-100 text-green-600 px-4 py-2 rounded-lg text-sm font-medium transition duration-200"
           >
-            Download .txt
+            💾 Download .txt
           </button>
         </div>
       )}
