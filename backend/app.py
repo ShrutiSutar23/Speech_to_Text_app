@@ -5,7 +5,7 @@ from supabase import create_client, Client
 import requests
 import os
 
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
